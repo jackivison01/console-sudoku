@@ -32,3 +32,7 @@ class BoardObject(BaseModel):
                 raise ValueError("grids list is empty")
             return value[0]
         return value
+    
+
+class CompleteCells(BaseModel):
+    cells: list[list[int]]

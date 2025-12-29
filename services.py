@@ -26,6 +26,7 @@ def get_sudoku(difficulty: Difficulty = Difficulty.RANDOM) -> BoardObject:
             new_board = response.json().get("newboard", {})
             game_board: BoardObject = BoardObject(**new_board)
         except requests.exceptions.RequestException as e:
+            print(e)
             return None
 
         if difficulty == Difficulty.RANDOM:

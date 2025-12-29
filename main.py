@@ -5,6 +5,7 @@ from pick import pick
 
 from constants import ROW_SEPARATOR, COLUMNS_HEADER, NUM_ROWS, NUM_COLUMNS, NUM_LIVES, Difficulty
 from services import print_in_colour, get_sudoku
+from models import CompleteCells
     
 
 class Game:
@@ -13,6 +14,7 @@ class Game:
         self.game_board = get_sudoku(difficulty)
 
         self.board_state = self.game_board.grids.value
+        self.complete_cells: CompleteCells = [[0 for i in range(NUM_COLUMNS)] for j in range(NUM_ROWS)]
         self.board_solution = self.game_board.grids.solution
 
         
@@ -27,7 +29,10 @@ class Game:
                 number_separator = " "
                 if j % 3 == 0 and j > 0:
                     number_separator = " | "
-                row_string += number_separator + str(self.board_state[i][j])
+                if self.complete_cells[i][j] == 1:
+                    row_string += number_separator + Fore.GREEN + str(self.board_state[i][j]) + Style.RESET_ALL
+                else:
+                    row_string += number_separator + str(self.board_state[i][j])
             if i % 3 == 0 and i > 0:
                 print(ROW_SEPARATOR)
             print(f"{i+1} {row_string}")
@@ -75,6 +80,39 @@ class Game:
             if new_game.lower() == "y":
                 return True
             
+    
+    def check_complete_cells(self):
+        #check rows
+        for i in range(NUM_ROWS):
+            if 0 in self.board_state[i]:
+                continue
+            for j in range(NUM_COLUMNS):
+                self.complete_cells[i][j] = 1
+        #check columns
+        inverted_board = list(map(list, zip(*self.board_state)))
+        for j in range(NUM_COLUMNS):
+            if 0 in inverted_board[j]:
+                continue
+            for i in range(NUM_ROWS):   
+                self.complete_cells[i][j] = 1
+        #check squares
+
+        #check numbers
+        complete_numbers = []
+        for i in range(NUM_ROWS):
+            for j in range(NUM_ROWS):
+                if i not in self.board_state[j]:
+                    continue
+            complete_numbers.append(i)
+
+        for i in range(NUM_ROWS):
+            for j in range(NUM_COLUMNS):
+                if self.board_state[i][j] in complete_numbers:
+                    self.complete_cells[i][j] = 1
+
+            
+        pass
+            
 
 def difficulty_selection() -> Difficulty:
     title = "Select game difficulty frm the following options: "
@@ -89,6 +127,7 @@ def difficulty_selection() -> Difficulty:
 def game_loop():
     selected_difficulty = difficulty_selection()
     game = Game(selected_difficulty)
+    game.check_complete_cells()
     game.display_board()
 
     while True:
@@ -107,7 +146,7 @@ def game_loop():
             break
 
         game.check_win()
-
+        game.check_complete_cells()
         game.display_board()
 
 if __name__ == "__main__":
