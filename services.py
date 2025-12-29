@@ -6,7 +6,7 @@ from colorama import Fore, Style
 from constants import API_URL, Difficulty
 from models import BoardObject
 
-def print_in_colour(text: str, colour):
+def print_in_colour(text: str, colour) -> None:
     print(colour + text + Style.RESET_ALL)
     
 

@@ -33,11 +33,11 @@ class Game:
             print(f"{i+1} {row_string}")
 
 
-    def get_board_state(self):
+    def get_board_state(self) -> list[list[int]]:
         return self.board_state
     
     
-    def input_value(self, row, column , val):
+    def input_value(self, row, column , val) -> None:
         #check correct
         if val != self.board_solution[row][column]:
             self.no_lives -= 1
@@ -62,7 +62,7 @@ class Game:
         return self.no_lives == 0
     
 
-    def reset_game(self):
+    def reset_game(self) -> bool:
         while True:
             new_game = str(input("Would you like to start a new game? (y/n) "))
             if new_game.lower() not in ("y", "n"):
@@ -76,7 +76,7 @@ class Game:
                 return True
             
 
-def difficulty_selection():
+def difficulty_selection() -> Difficulty:
     title = "Select game difficulty frm the following options: "
     
     difficulties = list(Difficulty)
